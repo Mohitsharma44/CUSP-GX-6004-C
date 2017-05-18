@@ -1,0 +1,8 @@
+[all]
+initramfs raspberrypi-ua-netinst/raspberrypi-ua-netinst.cpio.gz
+[pi3]
+enable_uart=1
+
+# Only for RPi model 3: The following line enables the ability to boot from USB.
+# Notice: This flag will be written to OTP and is permanent.
+#program_usb_boot_mode=1
