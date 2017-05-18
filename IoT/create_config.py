@@ -19,7 +19,7 @@ if __name__ == "__main__":
                         help='Network e.g. 192.168.1.0. Subnet is assumed to be /24')
     results = parser.parse_args()
 
-    all_hosts = list(range(int(results.total_nodes)))
+    all_hosts = list(range(50, 50+int(results.total_nodes)))
     _all_ips  = results.network.rstrip('0')+"{host}"
     all_ips  = list(map(lambda x: _all_ips.format(host=x), all_hosts))
 
