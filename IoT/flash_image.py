@@ -1,7 +1,8 @@
 import os
-import asyncio
-from subprocess import Popen, PIPE
 from datetime import datetime
+from functools import partial
+from subprocess import Popen, PIPE
+import multiprocessing as mp
 
 # absolute path for raspberry-ua-netinst
 source_dir = 'setup/raspberrypi-ua-netinst-v1.5.1'
@@ -17,6 +18,13 @@ drives = [
     '/Volumes/3'
 ]
 
+destination2 = [
+    '/Volumes/0/raspberrypi-ua-netinst/config',
+    '/Volumes/1/raspberrypi-ua-netinst/config',
+    '/Volumes/2/raspberrypi-ua-netinst/config',
+    '/Volumes/3/raspberrypi-ua-netinst/config',
+]
+
 # all the hosts to be written to at the same time
 hosts = [
     50,
@@ -25,7 +33,6 @@ hosts = [
     53
 ]
 
-@asyncio.coroutine
 def copy(source, destination):
     print("[{time}]: Copying to {dest}".format(time=datetime.now(),
                                                dest=destination))
@@ -34,9 +41,14 @@ def copy(source, destination):
     out, err = proc.communicate()
 
 if __name__ == "__main__":
-    event_loop = asyncio.get_event_loop()
-    results = [copy(source_dir, drive) for drive in drives]
-    results = results + [copy(os.path.join(source_dir2, str(hosts[i])),
-                              drive) for i, drive in enumerate(drives)]
-    event_loop.run_until_complete(asyncio.wait(results))
+    pool = mp.Pool(3)
+    results  = [pool.apply_async(copy, args=(source_dir, drive))
+                for drive in drives]
+
+    results2 = [pool.apply_async(copy,
+                                 args=(os.path.join(source_dir2, str(hosts[i]) ),
+                                       destination2[i]))
+                for i in range(len(destination2))]
+    pool.close()
+    pool.join()
     print("[{time}]: Done!".format(time=datetime.now()))
