@@ -47,10 +47,10 @@ if __name__ == "__main__":
         # generate 2048bit key
         key = RSA.generate(2048)
         # write private key to the file
-        os.makedirs(path, exist_ok=True)
+        os.makedirs(file_path, exist_ok=True)
         with open(os.path.join(file_path, 'private.key'), 'wb') as pvtkey_file:
             pvtkey_file.write(key.exportKey('PEM'))
-            os.chmod(os.path.join(path, 'private.key'), 600)
+            os.chmod(os.path.join(file_path, 'private.key'), 600)
         # change this in config file as well
         if conf.get('user_ssh_pubkey', None):
             conf['user_ssh_pubkey'] = key.publickey().exportKey('OpenSSH')
