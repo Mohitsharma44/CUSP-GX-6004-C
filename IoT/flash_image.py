@@ -41,13 +41,13 @@ def copy(source, destination):
     out, err = proc.communicate()
 
 if __name__ == "__main__":
-    pool = mp.Pool(3)
+    pool = mp.Pool(4)
     results  = [pool.apply_async(copy, args=(source_dir, drive))
                 for drive in drives]
 
     results2 = [pool.apply_async(copy,
-                                 args=(os.path.join(source_dir2, str(hosts[i]) ),
-                                       destination2[i]))
+                           args=(os.path.join(source_dir2, str(hosts[i]) ),
+                                 destination2[i]))
                 for i in range(len(destination2))]
     pool.close()
     pool.join()
