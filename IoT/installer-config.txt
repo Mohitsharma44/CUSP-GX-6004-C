@@ -1,5 +1,5 @@
 preset=server
-packages=sudo,nano,emacs,curl,wget,python-dev,python-pip,python-pycurl,git,openvpn,docker.io
+packages=sudo,nano,emacs,curl,wget,python-dev,python-pip,python-pycurl,git,openvpn
 firmware_packages=1
 user_ssh_pubkey=""
 ssh_pwlogin=1
