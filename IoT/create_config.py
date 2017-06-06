@@ -11,7 +11,7 @@ from datetime import datetime
 if __name__ == "__main__":
 
     config_file = "./installer-config.txt"
-    destination = "files/pi/"
+    destination = "files/root/home/pi/.ssh/"
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-hosts', action='store', dest='total_nodes',
@@ -52,10 +52,11 @@ if __name__ == "__main__":
         os.makedirs(file_path, exist_ok=True)
         with open(os.path.join(file_path, 'private.key'), 'wb') as pvtkey_file:
             pvtkey_file.write(key.exportKey('PEM'))
-            os.chmod(os.path.join(file_path, 'private.key'), 0o600)
+            os.chmod(os.path.join(file_path, 'private.key'), 0o400)
         # change this in config file as well
         if conf.get('user_ssh_pubkey', None):
-            conf['user_ssh_pubkey'] = key.publickey().exportKey('OpenSSH')
+            conf['user_ssh_pubkey'] = str('"'+key.publickey().exportKey('OpenSSH').
+                                          decode(encoding='utf-8')+'"')
 
         # write the configuration to a file
         with open(os.path.join(installer_path, 'installer-config.txt'), 'w') as cfg:
