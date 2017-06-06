@@ -1,1 +1,15 @@
-pip install pycurl, jupyter
+#!/bin/bash
+
+# Install stable version of Docker
+echo "Installing Docker ... "
+curl -sSL https://get.docker.com | sh
+
+# Install python packages
+echo "Installing pip packages ... "
+sudo pip install ipython numpy
+
+echo ""
+echo "===================="
+echo " TIME FOR A REBOOT! "
+echo "===================="
+echo ""
