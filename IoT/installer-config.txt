@@ -1,5 +1,5 @@
 preset=server
-packages=nano,emacs,curl,wget,python-dev,python-pip,git,openvpn
+packages=sudo,nano,emacs,curl,wget,python-dev,python-pip,git,openvpn
 firmware_packages=1
 user_ssh_pubkey=""
 ssh_pwlogin=1
@@ -7,7 +7,7 @@ username=pi
 userpw=cusp@19
 usergpu=1
 rootpw=cusp@19
-hostname=`sed s/://g /sys/class/net/wlan0/address``
+hostname=`sed s/://g /sys/class/net/wlan0/address`
 ifname=wlan0
 wlan_country=US
 wlan_ssid=iotclass
