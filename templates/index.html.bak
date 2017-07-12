@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ static_url('css/default_layout.css') }}">
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+  </head>
+  <body>
+    <div class="login-page">
+      {% if login_form  == True %}
+      <div class="form">
+        <form class="login-form" method="post">
+          <input name="netid" type="text" placeholder="Enter your NetID"/>
+          <button>Get Key</button>
+        </form>
+      </div>
+      {% end %}
+      {% if authenticated %}
+      <a href={{ myKey }}> Download Key </a>
+      {% end %}
+    </div>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ static_url('css/default_layout.css') }}">
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+  </head>
+  <body>
+    <!-- NavBar -->
+    {% include "navbar.html" %}
+    <!-- Main Body -->
+    <h3>
+      <p class="lead" style="text-align:center">IOT and Microservices</p>
+    </h3>
+    <div id="myModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">
+              <strong>Enter Net ID</strong>
+            </h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" action="/login" method="post" id="login_form">
+              <div class="form-group has-warning">
+                <label class="control-label" for="inputWarning">NetID</label>
+                <input type="text" class="form-control" id="username" name="netid" value="NetID">
+              </div>
+              <p class="text-muted" align="right">All connections are being monitored
+              </p>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success" value="Sign In">Download Key</button>
+            <button type="reset" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      $("#myModal").modal('show');
+    </script>
+    <!-- Footer -->
+    {% include "footer.html" %}
+  </body>
+</html>
