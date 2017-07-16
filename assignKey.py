@@ -4,28 +4,78 @@ import random
 import pandas as pd
 from tornado import websocket, web, ioloop, gen, escape
 
+KEY_DIR = os.getenv('iot_key_dir')
+IOT17_STUDENTS = os.getenv('NetId_17csv')
+NET = "192.168.1.0"
+RPI_IP_POOL = [NET.replace(NET.split('.')[-1], str(host)) for host in range(50, 81)]
 AUTHORIZED_USERS = {}
-[AUTHORIZED_USERS.update(
-    {x['NYU NetID']: {'First Name': x['First Name'],
-                      'Last Name': x['Last Name']}})
- for x in pd.read_csv(os.getenv('NetId_17csv')).to_dict(orient='records')]
+# Randomize the pool to assign to the authorized users
+# before the server is initialized
+random.shuffle(RPI_IP_POOL)
+
+def update_authorized_users():
+    """
+    Update the dict of `AUTHORIZED_USERS`
+    """
+    try:
+        if not os.path.exists(IOT17_STUDENTS):
+            raise("FileNotFound")
+        # Read the csv file
+        students_df = pd.read_csv(IOT17_STUDENTS)
+        # Delete all the Ip from RPI_IP_POOL that
+        # are already allocated
+        [RPI_IP_POOL.remove(ip) for ip in students_df[students_df['Ip'].notnull()]['Ip']]
+        # Allocate the remaining Ip to unallocated
+        # users
+        to_be_filled = students_df[students_df['Ip'].isnull()].shape[0]
+        print("to be filled: "+str(to_be_filled))
+        print("len(RPI_IP_POOL): "+str(len(RPI_IP_POOL)))
+        if to_be_filled > 0:
+            students_df.loc[students_df['Ip'].isnull(), 'Ip'] = RPI_IP_POOL[:to_be_filled]
+            # write the updated dataframe to csv file
+            students_df.to_csv(IOT17_STUDENTS)
+        # update authorized_users dict
+        [AUTHORIZED_USERS.update(
+            {x['NetId']: {'FirstName': x['FirstName'],
+                          'LastName': x['LastName'],
+                          'Ip': x['Ip']}})
+         for x in students_df.to_dict(orient='records')]
+    except Exception as ex:
+        print("Error updating authorized users: "+str(ex))
 
 
 class BaseHandler(web.RequestHandler):
+
     def get_current_user(self):
         return self.get_secure_cookie("user")
 
 
 class MainHandler(BaseHandler):
+
+    def get_key_path(self):
+        dict_key_netid = {}
+        keys  = None
+        paths = glob.glob(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../keys") + "/*.key")
+        keys  = [os.path.basename(k)[:-4] for k in paths]
+
     @web.asynchronous
     @web.authenticated
     def get(self):
         userid = escape.xhtml_escape(self.current_user)
+        # if IP = 192.168.1.44, the key assigned = 44.key
+        key_path = os.path.join(os.path.relpath(KEY_DIR),
+                                AUTHORIZED_USERS[self.current_user.decode('utf-8')
+                                                 .strip('"')]['Ip'].split('.')[-1]) + ".key"
         self.render("index.html",
                     title="IOTclass",
                     # The things you need to do to convert between bytes and string!!!
                     username=AUTHORIZED_USERS[self.current_user.decode('utf-8').strip('"')]
-                    ['First Name'])
+                    ['FirstName'],
+                    pi_ip=AUTHORIZED_USERS[self.current_user.decode('utf-8').strip('"')]
+                    ['Ip'],
+                    myKey=key_path)
 
     def post(self):
         pass
@@ -64,40 +114,6 @@ class LogoutHandler(BaseHandler):
         self.redirect(self.get_argument("next", u"/"))
 
 
-class KeyDownloadHandler(BaseHandler):
-    """
-    Class to provide download of key
-    """
-    def get(self):
-        self.render("index.html", title="",
-                    login_form=True, myKey="",
-                    authenticated=False)
-
-    def post(self):
-        dict_key_netid = {}
-        keys  = None
-        paths = glob.glob(os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "keys") + "/*.key")
-        keys  = [os.path.basename(k)[:-4] for k in paths]
-        netid = self.get_argument("netid")
-        validate = False
-        checkId  = pd.read_csv("CUSP_F17_Students.csv", usecols=[2])
-        if (checkId["NYU NetID"].str.contains(netid).any()):
-            validate = True
-        if validate:
-            if ((netid not in dict_key_netid) and keys):
-                assignKey = random.choice(keys)
-                dict_key_netid[netid] = assignKey
-                keys.pop(keys.index(assignKey))
-                path = os.path.join("../keys", assignKey) + ".key"
-            else:
-                keyFound = dict_key_netid[netid]
-                path = os.path.join("../keys", keyFound) + ".key"
-            self.render("index.html", title="IOT Keys",
-                        myKey=path, login_form="True",
-                        authenticated=True)
-
 settings = {
     'login_url': '/login',
     'template_path': 'templates/',
@@ -113,13 +129,14 @@ def make_app():
         (r"/", MainHandler),
         (r"/login", LoginHandler),
         (r"/logout", LogoutHandler),
-        (r"/key", KeyDownloadHandler),
-        (r"/keys/(.*)", web.StaticFileHandler,{'path': "../keys"}),
+        (r"/keys/(.*)", web.StaticFileHandler,{'path': os.path.relpath(KEY_DIR)}),
     ],
     **settings
 )
 
 if __name__ == "__main__":
+    # Update authorized users first
+    update_authorized_users()
     app = make_app()
     app.listen(8888)
     ioloop.IOLoop.current().start()
