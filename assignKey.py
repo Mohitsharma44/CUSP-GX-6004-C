@@ -28,8 +28,6 @@ def update_authorized_users():
         # Allocate the remaining Ip to unallocated
         # users
         to_be_filled = students_df[students_df['Ip'].isnull()].shape[0]
-        print("to be filled: "+str(to_be_filled))
-        print("len(RPI_IP_POOL): "+str(len(RPI_IP_POOL)))
         if to_be_filled > 0:
             students_df.loc[students_df['Ip'].isnull(), 'Ip'] = RPI_IP_POOL[:to_be_filled]
             # write the updated dataframe to csv file
