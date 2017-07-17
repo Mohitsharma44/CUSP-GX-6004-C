@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ static_url('css/default_layout.css') }}">
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    {% include "navbar.html" %}
+    <!-- Main Body -->
+    <p class="lead" style="text-align:center; font-size:28">Howdy, {{ username }}!</p>
+    <p class="text-warning" style="font-size:23"> Here are the things that you can do: </p>
+    <!-- Thigs that User is allowed to do-->
+    <div class="col-sm-2">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Download Key</h3>
+        </div>
+        <div class="panel-body">
+          <p> Your Pi is waiting for you at: {{ pi_ip }} </p>
+          <a href={{ myKey }}> <button type="submit" class="btn btn-success" value="DownloadKey">Download Key</button> </a>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    {% include "footer.html" %}
+  </body>
+</html>

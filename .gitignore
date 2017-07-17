@@ -9,6 +9,9 @@ __pycache__/
 # Virtual environment
 iotenv/
 
+# Pvt keys
+keys/
+
 # Distribution / packaging
 .Python
 env/
