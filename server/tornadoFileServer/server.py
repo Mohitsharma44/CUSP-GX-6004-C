@@ -65,7 +65,9 @@ class MainHandler(BaseHandler):
         # if IP = 192.168.1.44, the key assigned = 44.key
         key_path = os.path.join(os.path.relpath(KEY_DIR),
                                 AUTHORIZED_USERS[self.current_user.decode('utf-8')
-                                                 .strip('"')]['Ip'].split('.')[-1]) + ".key"
+                                                 .strip('"')]['Ip'].split('.')[-1],
+                                "files", "root", "home", "pi", ".ssh", "private.key")
+        print(key_path)
         self.render("index.html",
                     title="IOTclass",
                     # The things you need to do to convert between bytes and string!!!
