@@ -8,7 +8,7 @@ import multiprocessing as mp
 source_dir = 'setup/raspberrypi-ua-netinst-v1.5.1'
 
 # additional files from dir
-source_dir2 = ''
+source_dir2 = './'
 
 # absolute path for the memcard formatted in MsDOS format
 drives = [
@@ -27,10 +27,10 @@ destination2 = [
 
 # all the hosts to be written to at the same time
 hosts = [
-    50,
-    51,
-    52,
-    53
+    78,
+    79,
+    80,
+    81
 ]
 
 def copy(source, destination):
@@ -46,7 +46,8 @@ if __name__ == "__main__":
                 for drive in drives]
 
     results2 = [pool.apply_async(copy,
-                           args=(os.path.join(source_dir2, str(hosts[i]) ),
+                           args=(os.path.join(os.path.abspath(source_dir2),
+                                              str(hosts[i])),
                                  destination2[i]))
                 for i in range(len(destination2))]
     pool.close()
