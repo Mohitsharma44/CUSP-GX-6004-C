@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ static_url('css/default_layout.css') }}">
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css" />
+    <style>
+      #wrapper td {
+      vertical-align: middle;
+      text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Include Navbar -->
+    {% include navbar.html %}
+    <div class="alert alert-dismissible alert-warning">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4> Warning!!! </h4>
+      <p class="lead">{{ comment }}</p>
+    </div>
+    <table id="wrapper">
+      <tr>
+        <td> <img src="{{ static_url('imgs/404.jpg') }}"/> </td>
+      </tr>
+    </table>
+    <!-- Include footer -->
+    {% include footer.html %}
+  </body>
+</html>

@@ -113,6 +113,24 @@ class LogoutHandler(BaseHandler):
         self.redirect(self.get_argument("next", u"/"))
 
 
+class WarningHandler(BaseHandler):
+    """
+    a 404 handler
+    """
+    def get(self, resource):
+        username = ""
+        try:
+            username = AUTHORIZED_USERS[self.current_user.decode('utf-8').strip('"')]["FirstName"]
+        except Exception as ex:
+            username = ""
+        self.render("404.html",
+                    title="Error",
+                    comment="Hey common now {user}, \
+                    you know you are not allowed to be here, right?".format(user=username))
+
+    def post(self):
+        pass
+
 settings = {
     'login_url': '/login',
     'template_path': 'templates/',
@@ -129,6 +147,7 @@ def make_app():
         (r"/login", LoginHandler),
         (r"/logout", LogoutHandler),
         (r"/keys/(.*)", web.StaticFileHandler,{'path': os.path.relpath(KEY_DIR)}),
+        (r"/(.*)", WarningHandler),
     ],
     **settings
 )
