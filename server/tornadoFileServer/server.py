@@ -62,19 +62,23 @@ class MainHandler(BaseHandler):
     @web.authenticated
     def get(self):
         userid = escape.xhtml_escape(self.current_user)
+        username = AUTHORIZED_USERS[self.current_user.decode('utf-8').strip('"')]['FirstName']
         # if IP = 192.168.1.44, the key assigned = 44.key
-        key_path = os.path.join(os.path.relpath(KEY_DIR),
-                                AUTHORIZED_USERS[self.current_user.decode('utf-8')
-                                                 .strip('"')]['Ip'].split('.')[-1],
+        # The things you need to do to convert between bytes and string!!!
+        pi_ip=AUTHORIZED_USERS[self.current_user.decode('utf-8').strip('"')]['Ip']
+        key_path = os.path.join(os.path.relpath(KEY_DIR), pi_ip.split('.')[-1],
                                 "files", "root", "home", "pi", ".ssh", "private.key")
+        pivpn_path = os.path.join(os.path.relpath(KEY_DIR), pi_ip.split('.')[-1],
+                                  "files", "vpnkeys", "pivpn{0}.ovpn".format(pi_ip.split('.')[-1]))
+        myvpn_path = os.path.join(os.path.relpath(KEY_DIR), pi_ip.split('.')[-1],
+                                  "files", "vpnkeys", "myvpn{0}.ovpn".format(pi_ip.split('.')[-1]))
         self.render("index.html",
                     title="IOTclass",
-                    # The things you need to do to convert between bytes and string!!!
-                    username=AUTHORIZED_USERS[self.current_user.decode('utf-8').strip('"')]
-                    ['FirstName'],
-                    pi_ip=AUTHORIZED_USERS[self.current_user.decode('utf-8').strip('"')]
-                    ['Ip'],
-                    myKey=key_path)
+                    username=username,
+                    pi_ip=pi_ip,
+                    myKey=key_path,
+                    pivpnKey=pivpn_path,
+                    myvpnKey=myvpn_path)
 
     def post(self):
         pass
