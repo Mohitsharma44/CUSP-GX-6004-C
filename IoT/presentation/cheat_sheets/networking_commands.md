@@ -10,4 +10,7 @@
 | `ip route get <host_ip>`                                  | Show the route taken to reach this host                                            |
 | `ip neigh` (`add/del/change`) `<host_ip> dev <device>`    | Show all the neighbors that it has connected to                                    |
 | `ping -I <dev> <host_ip>`                                 | Ping the host via particular interface                                             |
-|                                                           |                                                                                    |
+| `dhcpcd -U <dev>`                                         | Dump the dhcp lease info                                                                                   |
+| `iwconfig <dev>`                                          | Show only the wireless interfaces and its properties                                                       |
+| `iwlist <dev> scan essid <essid>`                         | Use wireless interface for performing scan (optionally, pass the essid you want to scan)                   |
+
