@@ -37,8 +37,7 @@ do
         "192.168.1.77"
         "192.168.1.78"
         "192.168.1.79"
-        "192.168.1.80"
-        "192.168.1.81");
+        "192.168.1.80");
     for i in "${IP[@]}"
     do
         ping -c 1 -t 3 $i &> /dev/null && printf "%-15s : $grn %s $end \n" $i "Online" || printf "%-15s : $red %s $end \n" $i "Offline";
