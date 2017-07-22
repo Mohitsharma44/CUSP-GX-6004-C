@@ -16,7 +16,7 @@ def iotlogger(loggername, log_path='./'):
     logpath: str
         path where you want to save your logs to
     """
-    LOG_FNAME = os.path.join(os.path.abspath(log_path), loggername)
+    LOG_FNAME = os.path.join(os.path.abspath(log_path), loggername)+".log"
     logger = logging.getLogger(loggername)
     # Generic logging level set to DEBUG
     logger.setLevel(logging.DEBUG)
