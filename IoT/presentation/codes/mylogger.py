@@ -3,7 +3,7 @@ import sys
 import logging
 import logging.handlers
 
-def iotlogger(loggername, log_path):
+def iotlogger(loggername, log_path='./'):
     """
     Function to return logger object
     provoding streaming logs (on your terminal) and
