@@ -18,7 +18,7 @@ def handle_exception(function):
 @handle_exception
 def cpuStats():
     logger.debug('Obtaining cpustats')
-    cpu_stats = {'cpu_cur_freq': psutil.cpu_freq().current,
+    cpu_stats = {'cpu_cur_freq': str(psutil.cpu_freq().current).replace('L', ''),
                  'cpu_load': psutil.cpu_percent(percpu=False),
     }
     return cpu_stats
@@ -45,7 +45,7 @@ def networkStats():
         for addr in addrs:
             try:
                 socket.inet_aton(addr.address)
-                nics.update({nic: addr.address})
+                nics.update({"net_"+str(nic): addr.address})
             except Exception as ex:
                 # Dont bother, it just means ip address is ipv6
                 # or invalid
@@ -54,8 +54,8 @@ def networkStats():
     tx_bytes = str(psutil.net_io_counters().bytes_sent).replace('L', '')
 
     network_stats = {
-        'RX_packets': recd_bytes,
-        'TX_packets': tx_bytes,
+        'net_rx_packets': recd_bytes,
+        'net_tx_packets': tx_bytes,
     }
     network_stats.update(nics)
     return network_stats
@@ -64,7 +64,7 @@ def networkStats():
 def storageStats():
     logger.debug('Obtaining storagestats')
     root_usage = psutil.disk_usage("/").percent
-    storage_stats = {'root_usage': root_usage}
+    storage_stats = {'storage_root': root_usage}
     return storage_stats
 
 def stats():
@@ -77,3 +77,4 @@ def stats():
     status_ping.update(mem_stats)
     status_ping.update(network_stats)
     status_ping.update(storage_stats)
+    return status_ping
