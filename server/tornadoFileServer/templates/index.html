@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="{{ static_url('css/default_layout.css') }}">
     <script src="{{ static_url('js/jquery.min.js') }}"></script>
     <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <title>{{ title }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css" />
   </head>
@@ -13,31 +14,57 @@
     <p class="lead" style="text-align:center; font-size:28">Howdy, {{ username }}!</p>
     <p class="text-warning" style="font-size:23"> Here are the things that you can do: </p>
     <!-- Thigs that User is allowed to do-->
-    <div class="col-sm-2">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <h3 class="panel-title">SSH Access</h3>
-        </div>
-        <div class="panel-body">
-          <p> Your Pi is waiting for you at: {{ pi_ip }} </p>
-          <a href={{ myKey }}> <button type="submit" class="btn btn-success" value="DownloadKey">Download SSH Key</button> </a>
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">SSH Access</h3>
+          </div>
+          <div class="panel-body">
+            <p> Your Pi is waiting for you at: {{ pi_ip }} </p>
+            <a href={{ myKey }}> <button type="submit" class="btn btn-success" value="DownloadKey">Download SSH Key</button> </a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="col-sm-2">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <h3 class="panel-title">VPN Access</h3>
-        </div>
-        <div class="panel-body">
-          <p> Use this key on your Pi </p>
-          <a href={{ pivpnKey }}> <button type="submit" class="btn btn-success" value="DownloadKey">VPN Key for Pi</button> </a>
-          <p> Use this key on your host</p>
-          <a href={{ myvpnKey }}> <button type="submit" class="btn btn-success" value="DownloadKey">VPN Key for host</button> </a>
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">VPN Access</h3>
+          </div>
+          <div class="panel-body">
+            <p> Use this key on your Pi </p>
+            <a href={{ pivpnKey }}> <button type="submit" class="btn btn-success" value="DownloadKey">VPN Key for Pi</button> </a>
+            <p> Use this key on your host</p>
+            <a href={{ myvpnKey }}> <button type="submit" class="btn btn-success" value="DownloadKey">VPN Key for host</button> </a>
+          </div>
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">GraphData1</h3>
+          </div>
+          <div class="panel-body">
+            <div class="graph"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">GraphData2</h3>
+          </div>
+          <div class="panel-body">
+            <div class="graph2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="{{ static_url('js/realtime1.js') }}"></script>
     <!-- Footer -->
     {% include "footer.html" %}
   </body>
