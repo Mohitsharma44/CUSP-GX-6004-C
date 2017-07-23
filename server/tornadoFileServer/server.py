@@ -1,5 +1,6 @@
 import os
 import glob
+import json
 import random
 import pandas as pd
 from tornado import websocket, web, ioloop, gen, escape
@@ -9,6 +10,7 @@ IOT17_STUDENTS = os.getenv('NetId_17csv')
 NET = "192.168.1.0"
 RPI_IP_POOL = [NET.replace(NET.split('.')[-1], str(host)) for host in range(50, 81)]
 AUTHORIZED_USERS = {}
+CLIENTS = []
 # Randomize the pool to assign to the authorized users
 # before the server is initialized
 random.shuffle(RPI_IP_POOL)
@@ -117,6 +119,52 @@ class LogoutHandler(BaseHandler):
         self.redirect(self.get_argument("next", u"/"))
 
 
+class RealtimeHandler(websocket.WebSocketHandler):
+    """
+    Class to handle the sockets
+    """
+    def check_origin(self, origin):
+        """
+        Accept all cross-origin traffic
+        """
+        return True
+
+    def open(self):
+        print("Socket Opened by: "+escape.json_decode(self.get_secure_cookie("user")))
+        if self.get_secure_cookie("user"):
+            self.write_message("Socket opened")
+            if not self in CLIENTS:
+                CLIENTS.append(self)
+        else:
+            self.close(code=401, reason="Unauthorized")
+            return
+
+    def on_message(self, message):
+        print("Message Recieved: " + message)
+
+    def on_close(self):
+        if self in CLIENTS:
+            CLIENTS.remove(self)
+        print("Socket closed")
+
+class StatusUploadHandler(BaseHandler):
+    """
+    Class to handle the status upload from sensors
+    """
+    def get(self):
+        pass
+
+    def post(self):
+        self.status_info = json.loads(self.request.body)
+        uploaded_by = self.request.headers.get('Id')
+        for client in CLIENTS:
+            if escape.json_decode(client.get_secure_cookie("user")) == "ajd629":
+                print("Gotcha!")
+                client.write_message(self.status_info)
+        self.write("OK")
+        print('Uploaded by: '+str(uploaded_by))
+        print(self.status_info)
+
 class WarningHandler(BaseHandler):
     """
     a 404 handler
@@ -150,6 +198,8 @@ def make_app():
         (r"/", MainHandler),
         (r"/login", LoginHandler),
         (r"/logout", LogoutHandler),
+        (r"/status_upload", StatusUploadHandler),
+        (r"/realtime", RealtimeHandler),
         (r"/keys/(.*)", web.StaticFileHandler,{'path': os.path.relpath(KEY_DIR)}),
         (r"/(.*)", WarningHandler),
     ],
