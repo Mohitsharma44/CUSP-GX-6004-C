@@ -1,9 +1,19 @@
+var cpu_load = document.getElementById("cpu_load");
+var cpu_cur_freq = document.getElementById("cpu_cur_freq");
+var mem_available = document.getElementById("mem_available");
+var mem_percent = document.getElementById("mem_percent");
+var net_en0 = document.getElementById("net_en0");
+var storage_root = document.getElementById("storage_root");
+var net_tx_packets = document.getElementById("net_tx_packets");
+var net_rx_packets = document.getElementById("net_rx_packets");
+
 var limit = 60 * 1,
     duration = 750,
     now = new Date(Date.now() - duration);
 
-var width = 750,
-    height = 200;
+var width = document.getElementById('graphdata1').clientWidth,
+    height = 250;
+
 
 var groups = {
     cpu_util: {
@@ -38,7 +48,15 @@ ws.onopen = function(){
 ws.onmessage = function(ev){
     console.log("Got a message!");
     var json_data = JSON.parse(ev.data);
-    console.log(json_data.cpu_load);
+    console.log(json_data);
+    cpu_load.innerHTML = "CPU Load: " + parseInt(json_data.cpu_load) + " %";
+    cpu_cur_freq.innerHTML = "CPU Frequency: " + parseInt(json_data.cpu_cur_freq) + " GHz";
+    mem_available.innerHTML = "RAM Available: " + parseFloat(json_data.mem_available)/1024/1024 + " MB";
+    mem_percent.innerHTML = "RAM Percent: " + parseFloat(json_data.mem_percent) + " %";
+    net_en0.innerHTML = "IP Address: " + json_data.net_en0;
+    net_tx_packets.innerHTML = "Transmitted Packets: " + parseFloat(json_data.net_tx_packets);
+    net_rx_packets.innerHTML = "Received Packets: " + parseFloat(json_data.net_rx_packets);
+    storage_root.innerHTML = "Total Storage Used: " + parseFloat(json_data.storage_root) + " %";
     //for (var name in groups) {
     //    var group = groups[name];
     groups['cpu_util'].value = parseInt(json_data.cpu_load);
