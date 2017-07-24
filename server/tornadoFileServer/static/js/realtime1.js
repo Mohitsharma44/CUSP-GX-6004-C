@@ -6,7 +6,7 @@ var width = 750,
     height = 200;
 
 var groups = {
-    current: {
+    cpu_util: {
         value: 0,
         color: 'orange',
         data: d3.range(limit).map(function() {
@@ -39,14 +39,15 @@ ws.onmessage = function(ev){
     console.log("Got a message!");
     var json_data = JSON.parse(ev.data);
     console.log(json_data.cpu_load);
-    for (var name in groups) {
-        var group = groups[name];
-        group.value = parseInt(json_data.cpu_load);
-    } setTimeout(function(){
-        for (var name in groups){
-            var group = groups[name];
-            group.value = 0;
-        }
+    //for (var name in groups) {
+    //    var group = groups[name];
+    groups['cpu_util'].value = parseInt(json_data.cpu_load);
+    //}
+    setTimeout(function(){
+        //for (var name in groups){
+        //    var group = groups[name];
+        groups['cpu_util'].value = 0;
+        //}
     }, 10000);
 };
 
@@ -75,8 +76,7 @@ var line = d3.svg.line()
         return y(d);
     });
 
-
-var svg = d3.select('.graph').append('svg')
+var svg = d3.select(".graph").append('svg')
     .attr('class', 'chart')
     .attr('width', width)
     .attr('height', height + 50);
