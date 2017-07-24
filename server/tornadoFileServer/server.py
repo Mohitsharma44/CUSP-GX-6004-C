@@ -130,7 +130,7 @@ class RealtimeHandler(websocket.WebSocketHandler):
         return True
 
     def open(self):
-        print("Socket Opened by: "+escape.json_decode(self.get_secure_cookie("user")))
+        #print("Socket Opened by: "+escape.json_decode(self.get_secure_cookie("user")))
         if self.get_secure_cookie("user"):
             self.write_message("Socket opened")
             if not self in CLIENTS:
@@ -145,7 +145,7 @@ class RealtimeHandler(websocket.WebSocketHandler):
     def on_close(self):
         if self in CLIENTS:
             CLIENTS.remove(self)
-        print("Socket closed")
+        #print("Socket closed")
 
 class StatusUploadHandler(BaseHandler):
     """
@@ -158,12 +158,10 @@ class StatusUploadHandler(BaseHandler):
         self.status_info = json.loads(self.request.body)
         uploaded_by = self.request.headers.get('Id')
         for client in CLIENTS:
-            if escape.json_decode(client.get_secure_cookie("user")) == "ajd629":
-                print("Gotcha!")
+            if escape.json_decode(client.get_secure_cookie("user")) == uploaded_by:
                 client.write_message(self.status_info)
+                break
         self.write("OK")
-        print('Uploaded by: '+str(uploaded_by))
-        print(self.status_info)
 
 class WarningHandler(BaseHandler):
     """
