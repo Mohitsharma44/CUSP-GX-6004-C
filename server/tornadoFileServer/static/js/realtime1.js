@@ -42,7 +42,12 @@ ws.onmessage = function(ev){
     for (var name in groups) {
         var group = groups[name];
         group.value = parseInt(json_data.cpu_load);
-    }
+    } setTimeout(function(){
+        for (var name in groups){
+            var group = groups[name];
+            group.value = 0;
+        }
+    }, 10000);
 };
 
 ws.onclose = function(ev){
