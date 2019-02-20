@@ -1,17 +1,19 @@
 import argparse
 import os
 # -- fix for mac only
-import crypto
+#import crypto
 import sys
-sys.modules['Crypto'] = crypto
+#sys.modules['Crypto'] = crypto
 # --
+import shutil
 from Crypto.PublicKey import RSA
 from datetime import datetime
 
 if __name__ == "__main__":
 
-    config_file = "./installer-config.txt"
+    config_file = "installer-config.txt"
     destination = "files/root/home/pi/.ssh/"
+    KEY_DIR = os.getenv('iot_key_dir')
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-hosts', action='store', dest='total_nodes',
@@ -28,9 +30,9 @@ if __name__ == "__main__":
                         sorted(all_hosts, reverse=True)))
 
     for host in all_hosts:
-        file_path = os.path.join('./{current_host}'.format(current_host=host),
+        file_path = os.path.join('{current_host}'.format(current_host=host),
                             destination)
-        installer_path = os.path.join('./{current_host}'.format(current_host=host))
+        installer_path = os.path.join('{current_host}'.format(current_host=host))
         # parse the config file to a dictionary
         conf = {}
         with open(config_file) as fh:
@@ -49,15 +51,18 @@ if __name__ == "__main__":
         # generate 2048bit key
         key = RSA.generate(2048)
         # write private key to the file
-        os.makedirs(file_path, exist_ok=True)
+        if not os.path.exists(file_path):
+            os.makedirs(file_path)
+        print(file_path)
         with open(os.path.join(file_path, 'private.key'), 'wb') as pvtkey_file:
             pvtkey_file.write(key.exportKey('PEM'))
             os.chmod(os.path.join(file_path, 'private.key'), 0o400)
         # change this in config file as well
         if conf.get('user_ssh_pubkey', None):
-            conf['user_ssh_pubkey'] = str('"'+key.publickey().exportKey('OpenSSH').
-                                          decode(encoding='utf-8')+'"')
-
+            conf['user_ssh_pubkey'] = key.publickey().exportKey('OpenSSH').decode('utf-8')
+        shutil.copytree(str(host), os.path.join(KEY_DIR, str(host)))
+        if conf.get('ip_addr', None):
+            conf['ip_addr'] = '.'.join(conf['ip_addr'].split('.')[:-1]) + '.{}'.format(host)
         # write the configuration to a file
         with open(os.path.join(installer_path, 'installer-config.txt'), 'w') as cfg:
             for item in conf.items():
