@@ -1,0 +1,5 @@
+[all]
+initramfs raspberrypi-ua-netinst/raspberrypi-ua-netinst.cpio.gz
+gpu_mem=16
+[pi3]
+enable_uart=1
