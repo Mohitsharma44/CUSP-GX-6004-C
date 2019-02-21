@@ -6,9 +6,10 @@ import pandas as pd
 from tornado import websocket, web, ioloop, gen, escape
 
 KEY_DIR = os.getenv('iot_key_dir')
-IOT17_STUDENTS = os.getenv('NetId_17csv')
+IOT17_STUDENTS = os.getenv('NetId_19csv')
 NET = "192.168.1.0"
-RPI_IP_POOL = [NET.replace(NET.split('.')[-1], str(host)) for host in range(50, 81)]
+# For 2019 batch, we will have 2 users per RPI. If there is 1 per Pi, remove the `* 2`
+RPI_IP_POOL = [NET.replace(NET.split('.')[-1], str(host)) for host in range(51, 61)] * 2
 AUTHORIZED_USERS = {}
 CLIENTS = []
 # Randomize the pool to assign to the authorized users
