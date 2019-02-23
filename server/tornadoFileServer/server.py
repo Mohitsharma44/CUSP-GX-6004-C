@@ -2,8 +2,14 @@ import os
 import glob
 import json
 import random
+import logging
 import pandas as pd
+import tornado
 from tornado import websocket, web, ioloop, gen, escape
+from tornado.log import enable_pretty_logging
+
+logger = logging.getLogger("tornado.application")
+enable_pretty_logging()
 
 KEY_DIR = os.getenv('iot_key_dir')
 IOT17_STUDENTS = os.getenv('NetId_19csv')
@@ -66,6 +72,7 @@ class MainHandler(BaseHandler):
     def get(self):
         userid = escape.xhtml_escape(self.current_user)
         username = AUTHORIZED_USERS[self.current_user.decode('utf-8').strip('"')]['FirstName']
+        logger.info("User {} logged in".format(username))
         # if IP = 192.168.1.44, the key assigned = 44.key
         # The things you need to do to convert between bytes and string!!!
         pi_ip=AUTHORIZED_USERS[self.current_user.decode('utf-8').strip('"')]['Ip']
