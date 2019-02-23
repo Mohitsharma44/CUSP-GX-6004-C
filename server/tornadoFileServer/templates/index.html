@@ -11,11 +11,12 @@
   <body>
     {% include "navbar.html" %}
     <!-- Main Body -->
+    <div class="container-fluid">
     <p class="lead" style="text-align:center; font-size:28">Howdy, {{ username }}!</p>
     <p class="text-warning" style="font-size:23"> Here are the things that you can do: </p>
     <!-- Thigs that User is allowed to do-->
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-6">
         <div class="panel panel-primary">
           <div class="panel-heading">
             <h3 class="panel-title">SSH Access</h3>
@@ -26,17 +27,16 @@
           </div>
         </div>
       </div>
-
-      <div class="col-sm-4">
+      <div class="col-sm-6">
         <div class="panel panel-primary">
           <div class="panel-heading">
-            <h3 class="panel-title">VPN Access</h3>
+            <h3 class="panel-title">VPN Access (DISABLED for this class)</h3>
           </div>
           <div class="panel-body">
-            <p> Use this key on your Pi </p>
-            <a href={{ pivpnKey }}> <button type="submit" class="btn btn-success" value="DownloadKey">VPN Key for Pi</button> </a>
-            <p> Use this key on your host</p>
-            <a href={{ myvpnKey }}> <button type="submit" class="btn btn-success" value="DownloadKey">VPN Key for host</button> </a>
+            <p class="text-muted"> Use this key on your Pi </p>
+            <a href={{ pivpnKey }}> <button type="submit" class="btn btn-success" value="DownloadKey" disabled>VPN Key for Pi</button> </a>
+            <p class="text-muted"> Use this key on your host</p>
+            <a href={{ myvpnKey }}> <button type="submit" class="btn btn-success" value="DownloadKey" disabled>VPN Key for host</button> </a>
           </div>
         </div>
       </div>
@@ -71,6 +71,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
     <script src="{{ static_url('js/realtime1.js') }}"></script>
     <!-- Footer -->
