@@ -1,6 +1,6 @@
 import json
 import pycurl
-import cStringIO
+from io import BytesIO
 import devstatus
 from mylogger import iotlogger
 
@@ -32,12 +32,12 @@ def uploadStatus(status, server="http://localhost:8888/status_upload"):
     """
     logger.debug("Uploading Status")
     c = pycurl.Curl()
-    response = cStringIO.StringIO()
+    response = BytesIO()
     c.setopt(pycurl.URL, "http://localhost:8888/status_upload")
     c.setopt(pycurl.TIMEOUT, 5)
     c.setopt(
         pycurl.HTTPHEADER, [
-            'id: ' + 'ajd629'])
+            'id: ' + 'mss652'])
     c.setopt(pycurl.POST, 1)
     c.setopt(pycurl.POSTFIELDS, status)
     c.setopt(pycurl.WRITEFUNCTION, response.write)

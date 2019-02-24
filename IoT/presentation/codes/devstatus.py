@@ -2,6 +2,8 @@ import re
 import psutil
 import misc
 import socket
+import datetime
+import pytz
 from mylogger import iotlogger
 
 logger = iotlogger(loggername="DevStatus")
@@ -68,6 +70,7 @@ def storageStats():
     return storage_stats
 
 def stats():
+    timestamp = '{}'.format(datetime.datetime.utcnow().replace(tzinfo = pytz.timezone('America/New_York')))
     cpu_stats = cpuStats()
     mem_stats = memoryStats()
     network_stats = networkStats()
@@ -77,4 +80,5 @@ def stats():
     status_ping.update(mem_stats)
     status_ping.update(network_stats)
     status_ping.update(storage_stats)
+    status_ping.update({'timestamp': timestamp})
     return status_ping

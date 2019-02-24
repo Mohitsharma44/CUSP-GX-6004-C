@@ -6,6 +6,7 @@ var net_en0 = document.getElementById("net_en0");
 var storage_root = document.getElementById("storage_root");
 var net_tx_packets = document.getElementById("net_tx_packets");
 var net_rx_packets = document.getElementById("net_rx_packets");
+var timestamp = document.getElementById("timestamp");
 
 var limit = 60 * 1,
     duration = 750,
@@ -19,6 +20,13 @@ var groups = {
     cpu_util: {
         value: 0,
         color: 'orange',
+        data: d3.range(limit).map(function() {
+            return 0;
+        })
+    },
+    ram_util: {
+        value: 0,
+        color: 'green',
         data: d3.range(limit).map(function() {
             return 0;
         })
@@ -40,6 +48,7 @@ var groups = {
     */
 }
 
+//var ws = new WebSocket("ws://192.168.1.99:8888/realtime");
 var ws = new WebSocket("ws://localhost:8888/realtime");
 ws.onopen = function(){
     console.log("Connection Established");
@@ -51,22 +60,25 @@ ws.onmessage = function(ev){
     console.log(json_data);
     cpu_load.innerHTML = "CPU Load: " + parseInt(json_data.cpu_load) + " %";
     cpu_cur_freq.innerHTML = "CPU Frequency: " + parseInt(json_data.cpu_cur_freq) + " GHz";
-    mem_available.innerHTML = "RAM Available: " + parseFloat(json_data.mem_available)/1024/1024 + " MB";
+    mem_available.innerHTML = "RAM Available: " + parseFloat(json_data.mem_available)/1024/1024/1024 + " GB";
     mem_percent.innerHTML = "RAM Percent: " + parseFloat(json_data.mem_percent) + " %";
     net_en0.innerHTML = "IP Address: " + json_data.net_en0;
     net_tx_packets.innerHTML = "Transmitted Packets: " + parseFloat(json_data.net_tx_packets);
     net_rx_packets.innerHTML = "Received Packets: " + parseFloat(json_data.net_rx_packets);
     storage_root.innerHTML = "Total Storage Used: " + parseFloat(json_data.storage_root) + " %";
+    timestamp.innerHTML = "Last Update at: " + json_data.timestamp;
     //for (var name in groups) {
     //    var group = groups[name];
     groups['cpu_util'].value = parseInt(json_data.cpu_load);
+    groups['ram_util'].value = parseInt(json_data.mem_percent);
     //}
     setTimeout(function(){
         //for (var name in groups){
         //    var group = groups[name];
         groups['cpu_util'].value = 0;
+        groups['ram_util'].value = 0;
         //}
-    }, 10000);
+    }, 5000);
 };
 
 ws.onclose = function(ev){
