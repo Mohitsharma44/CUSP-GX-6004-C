@@ -1,5 +1,5 @@
 ipython==7.3.0
-numpy==1.16.1
+numpy==1.22.0
 pandas==0.24.1
 pycryptodome==3.7.3
 tornado==5.1.1
